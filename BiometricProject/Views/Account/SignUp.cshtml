@@ -1,0 +1,133 @@
+﻿@model BiometricProject.Models.Models.UserDetailsModel
+
+@{
+    ViewBag.Title = "SignUp";
+}
+
+
+@using (Html.BeginForm("SignUp", "Account", FormMethod.Post,new { @id="userDetailsSignUpFrmId"}))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="container">
+            <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                <div class="card card-signin my-5">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">User Sign Up</h5>
+                        <form class="form-signin">
+                            <div class="form-label-group">
+                                @Html.Label("Aadhar Number")
+                                @Html.TextBoxFor(m => m.AadharNumber, new { @class = "form-control", placeholder = "Aadhar Number" })
+                                <small>@Html.ValidationMessageFor(model => model.AadharNumber, "", new { @class = "text-danger" })</small>
+                            </div>
+                            <br />
+                            <div class="form-label-group">
+                                @Html.Label("Name (As per Aadhar)")
+                                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "Name" })
+                                <small>@Html.ValidationMessageFor(model => model.AadharNumber, "", new { @class = "text-danger" })</small>
+                            </div>
+                            <br />
+                            <div class="form-label-group">
+                                @Html.Label("Phone (As per Aadhar)")
+                                @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", placeholder = "Phone Number" })
+                                <small>@Html.ValidationMessageFor(model => model.AadharNumber, "", new { @class = "text-danger" })</small>
+                            </div>
+                            <br />
+                            <div class="form-label-group">
+                                @Html.Label("Email (As per Aadhar)")
+                                @Html.TextBoxFor(m => m.EmailAddress, new { @class = "form-control", placeholder = "Email Address" })
+                                <small>@Html.ValidationMessageFor(model => model.AadharNumber, "", new { @class = "text-danger" })</small>
+                            </div>
+                            <br />
+                            <div class="form-label-group">
+                                @Html.Label("Password")
+                                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Password" })
+                                <small>@Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })</small>
+                            </div>
+                            <br />
+                            <div class="form-label-group">
+                                @Html.Label("Confirm Password")
+                                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirm Password" })
+                                <small>@Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })</small>
+                            </div>
+                            <br />
+                            <div class="form-group">
+                                <label>Upload Image:</label>
+                                <div class="input-group col-6">
+                                    <span class="btn">
+                                        <span class="btn btn-primary btn-file">
+                                            <input type="file" id="vendorPic" name="vendorPic">
+                                        </span>
+                                    </span>
+                                </div>
+                                <img id='img-upload' />
+                            </div>
+                            <br />
+                            <button type="button" class="btn btn-lg btn-primary btn-block text-uppercase" id="submitId">Submit</button>
+                        </form>
+                        <div id="oTPValidateDiv" style="display:none" class="mt-2">
+                            <br />
+                            <div class="form-label-group">
+                                @Html.PasswordFor(m => m.OTP, new { @class = "form-control", placeholder = "OTP" })
+                                <small>@Html.ValidationMessageFor(model => model.OTP, "", new { @class = "text-danger" })</small>
+                            </div>
+                            <br />
+                            <button type="button" id="verifyBtnId" class="btn btn-lg btn-success btn-block text-uppercase">Verify</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+}
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+<script type="text/javascript">
+
+    $("#submitId").click(function () {
+
+        $.ajax({
+            url: '@Url.Action("ValidateAadharDetails", "Account")',
+            type: 'GET',
+            dataType: 'json',
+            data: $("#userDetailsSignUpFrmId").serialize(),
+            success: function (data) {
+                if (data == "true") {
+                    $("#oTPValidateDiv").css("display", "block");
+                    $("#submitId").css("display", "none");
+                    alert("OTP Sended to registered mail");
+                    return false;
+                }
+                else if (data == "user already registerd") {
+                    alert("User already registered");
+                }
+                else {
+                    alert("Entered details are not matched with aadhar database");
+                }
+            }
+        });
+    });
+
+    $("#verifyBtnId").click(function () {
+
+        $.ajax({
+            url: '@Url.Action("ValidateOTP", "Account")',
+            type: 'GET',
+            dataType: 'json',
+            data: $("#userDetailsSignUpFrmId").serialize(),
+            success: function (data) {
+                if (data) {
+                    alert("User details saved successfully");
+                    window.location.href = '@Url.Action("Login","Account")';
+                }
+                else {
+                    alert("OTP incorrect/OTP expired");
+                }
+            }
+        });
+
+    });
+
+
+</script>

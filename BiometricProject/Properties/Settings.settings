@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="BiometricProject.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Email_UserName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">sekharch377@gmail.com</Value>
+    </Setting>
+    <Setting Name="Email_Password" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">ChPS@16121995</Value>
+    </Setting>
+    <Setting Name="Email_SMTPServer" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">smtp.gmail.com</Value>
+    </Setting>
+    <Setting Name="Email_PortNumber" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">587</Value>
+    </Setting>
+    <Setting Name="Email_IsSSL" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">true</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

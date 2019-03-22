@@ -1,0 +1,219 @@
+﻿@model BiometricProject.Models.Models.UserDetailsModel
+
+@{
+    Layout = null;
+}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="~/images/2.jpg">
+
+    <title>Online Voting</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="~/Content/bootstrap.min.css">
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+</head>
+
+<body background="~/images/1.jpg">
+    @using (Html.BeginForm("Login", "Account", FormMethod.Post,new { @id="LoginFrmId"}))
+    {
+        @Html.AntiForgeryToken()
+        <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark static-top" style="background-color:#2658b5">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="~/images/2.jpg" alt="">
+            </a>
+            <marquee><h3><span>Online Voting System</span></h3></marquee>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href='@Url.Action("SignUp", "Account")'>Sign Up</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+        <!-- Page Content -->
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                    <div class="card card-signin my-5">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">User Sign In</h5>
+                            <form class="form-signin">
+                                <div class="form-label-group">
+                                    @Html.TextBoxFor(m => m.AadharNumber, new { @class = "form-control", placeholder = "Aadhar Number" })
+                                    <small>@Html.ValidationMessageFor(model => model.AadharNumber, "", new { @class = "text-danger" })</small>
+                                    <small id="UserNameId" class="text-danger"></small>
+                                </div>
+                                <br />
+                                <div class="form-label-group">
+                                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Password" })
+                                    <small>@Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })</small>
+                                </div>
+                                <br />
+                                <div class="form-group">
+                                    <label>Upload Image:</label>
+                                    <div class="input-group col-6">
+                                        <span class="btn">
+                                            <span class="btn btn-primary btn-file">
+                                                <input type="file" id="vendorPic" name="vendorPic">
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <img id='img-upload' />
+                                </div>
+                                <br />
+                                <button type="button" class="btn btn-lg btn-primary btn-block text-uppercase" id="signInId">Sign In</button>
+                                <br />
+                                <div class="custom-control custom-checkbox mb-3">
+                                    <small><a class="text-danger float-left" href="~/Account/SignUp">New Member?</a></small>
+                                    <small><a class="text-danger float-right" href="javascript:void(0)" onclick="return ValidateValues();">Forgot Password ?</a></small>
+                                </div>
+                                <br />
+                            </form>
+                            <div id="checkOTPValidate" style="display:none">
+                                <div class="form-label-group">
+                                    @Html.PasswordFor(m => m.OTP, new { @class = "form-control", placeholder = "OTP" })
+                                    <small>@Html.ValidationMessageFor(model => model.OTP, "", new { @class = "text-danger" })</small>
+                                </div>
+                                <br />
+                                <button type="button" class="btn btn-lg btn-success btn-block text-uppercase" id="VerifyBtnId">Verify</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</body>
+</html>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        window.setTimeout(function () {
+            $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
+                $("#success-alert").slideUp(500);
+            });
+        }, 3000);
+
+        $("#signInId").click(function () {
+
+            $.ajax({
+                url: '@Url.Action("ValidateLoginDetails", "Account")',
+                type: 'GET',
+                dataType: 'json',
+                data: $("#LoginFrmId").serialize(),
+                success: function (data) {
+                    if (data) {
+                        $("#checkOTPValidate").css("display", "block");
+                        $("#signInId").css("display", "none");
+                        alert("OTP Sended to registered mail, please verify OTP");
+                        return false;
+                    }
+                    else {
+                        alert("Invalid credentials");
+                    }
+                }
+            });
+        });
+
+        $("#VerifyBtnId").click(function () {
+
+            $.ajax({
+                url: '@Url.Action("ValidateOTPLoginDetails", "Account")',
+                type: 'GET',
+                dataType: 'json',
+                data: $("#LoginFrmId").serialize(),
+                success: function (data) {
+                    if (data == "true") {
+                        window.location.href = '@Url.Action("PartyDetails","Account")?aadharNumber=' + $("#AadharNumber").val();
+                    }
+                    else if (data == "false") {
+                        alert("OTP incorrect/OTP expired");
+                    }
+                    else if (data == "already voted"){
+                        alert("User already voted");
+                    }
+                }
+            });
+        });
+
+        $("#LoginFrmId").submit(function () {
+
+        });
+
+    });
+
+    function ValidateValues() {
+        var Allow = true;
+        if ($("#AadharNumber").val() == "") {
+            $("#UserNameId").text("Please Aadhar Number");
+            Allow = false;
+        }
+        else {
+            $("#UserNameId").text("");
+        }
+        if (Allow == false)
+            return false;
+        else if ($("#CompanyName").val() != "" && $("#UserName").val() != "") {
+            window.location.href = ' @Url.Action("ForgotPassword", "Account")?companyName=' + $("#CompanyName").val() + '&userName=' + $("#UserName").val();
+        }
+    }
+
+    $("#AadharNumber").keyup(function () {
+        if ($("#AadharNumber").val() != "") {
+            $("#UserNameId").text("");
+        }
+    });
+
+    $(document).on('change', '.btn-file :file', function () {
+        var input = $(this),
+            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+        input.trigger('fileselect', [label]);
+    });
+
+    $('.btn-file :file').on('fileselect', function (event, label) {
+
+        var input = $(this).parents('.input-group').find(':text'),
+            log = label;
+
+        if (input.length) {
+            input.val(log);
+        } else {
+            if (log) alert(log);
+        }
+
+    });
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#img-upload').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#vendorPic").change(function () {
+        readURL(this);
+    });
+
+</script>

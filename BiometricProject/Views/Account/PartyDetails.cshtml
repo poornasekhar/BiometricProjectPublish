@@ -1,0 +1,79 @@
+﻿@model BiometricProject.Models.Models.VotingBaseModel
+
+@using (Html.BeginForm("VoteDetails", "Account", FormMethod.Post, new { @id = "voteDetailsFrmId", @class = "form-horizontal", role = "form" }))
+{
+   @Html.HiddenFor(model=>model.userDetails.AadharNumber)
+
+    <div class="main-content-inner">
+        <div class="container-fluid container-border py-2 main">
+
+            <div class="panel-group mt-2" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" role="tab" id="headingOne">
+                        <h4 class="panel-title">
+                                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" onclick="return false">
+                                    <i class="fa" aria-hidden="true"></i>
+                                    Voting Screen
+                                </button>
+                        </h4>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse show" role="tabpanel" aria-labelledby="headingOne">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-12 d-flex flex-wrap">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    <div class="panel panel-default mt-2" id="physicalDetails">
+                        <div class="panel-heading" role="tab" id="headingThree">
+                            <h4 class="panel-title">
+                                <button class="btn btn-link collapsed " data-toggle="collapse" data-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree" onclick="return false">
+                                    <i class="fa" aria-hidden="true"></i>
+                                    List of Candidates
+                                </button>
+                            </h4>
+                        </div>
+
+                        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-12 d-flex flex-wrap">
+                                        @*<span class="text-primary">Product Pricing Groups</span>*@
+                                        <div class="table-responsive mt-2">
+                                            <table class="table table-striped" id="tblProductPricingGroup">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col" class="width5">S.No</th>
+                                                        <th scope="col" class="width15">Candidate Name</th>
+                                                        <th scope="col" class="width15">Party Name</th>
+                                                        <th scope="col" class="width15">Party Symbol</th>
+                                                        <th scope="col" class="width15">Vote</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @{ int i = 0;}
+                                                    @foreach (var d in Model.partyDetails)
+                                                    {
+                                                    <tr>
+                                                        <td class="width5">@(++i)</td>
+                                                        <td class="width15">@d.CandidateName</td>
+                                                        <td class="width15">@d.PartyName</td>
+                                                        <td class="width15">@d.PartySymbolImage</td>
+                                                        <td class="width15"><input type="radio" id="@d.Id"></td>
+                                                    </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+            </div>
+        </div>
+    </div>
+}
