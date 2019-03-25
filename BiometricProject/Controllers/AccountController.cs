@@ -74,7 +74,7 @@ namespace BiometricProject.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
         } 
         
-        public ActionResult PartyDetails(int aadharNumber)
+        public ActionResult PartyDetails(long aadharNumber)
         {
             VotingBaseModel votingBaseModel = new VotingBaseModel()
             {
