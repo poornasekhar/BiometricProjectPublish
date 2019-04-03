@@ -16,6 +16,7 @@
         public DbSet<AadharDetails> AadharDetails { get; set; }
         public DbSet<PartyDetails> PartyDetails { get; set; }
         public DbSet<UserDetails> UserDetails { get; set; }
+        public DbSet<PartySymbols> PartySymbols { get; set; }
 
         public System.Data.Entity.DbSet<BiometricProject.Models.Models.UserDetailsModel> UserDetailsModels { get; set; }
     }

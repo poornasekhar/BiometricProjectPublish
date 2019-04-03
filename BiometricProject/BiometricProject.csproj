@@ -185,11 +185,17 @@
     <Compile Include="Migrations\201903201120168_Fourth2.Designer.cs">
       <DependentUpon>201903201120168_Fourth2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904011518463_Five.cs" />
+    <Compile Include="Migrations\201904011518463_Five.Designer.cs">
+      <DependentUpon>201904011518463_Five.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\BusinessLogic\Login.cs" />
     <Compile Include="Models\DataBaseModels\AadharDetails.cs" />
     <Compile Include="Models\DataBaseModels\PartyDetails.cs" />
+    <Compile Include="Models\DataBaseModels\PartySymbols.cs" />
     <Compile Include="Models\DataBaseModels\UserDetails.cs" />
+    <Compile Include="Models\Models\PartyRegisterModel.cs" />
     <Compile Include="Models\Models\UserDetailsModel.cs" />
     <Compile Include="Models\Models\VotingBaseModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -337,6 +343,7 @@
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\SignUp.cshtml" />
     <Content Include="Views\Account\PartyDetails.cshtml" />
+    <Content Include="Views\Account\RegisterParty.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201903190648305_First.resx">
@@ -359,6 +366,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201903201120168_Fourth2.resx">
       <DependentUpon>201903201120168_Fourth2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904011518463_Five.resx">
+      <DependentUpon>201904011518463_Five.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

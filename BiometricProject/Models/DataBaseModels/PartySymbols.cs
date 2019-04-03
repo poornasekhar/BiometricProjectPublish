@@ -7,18 +7,15 @@ using System.Web;
 
 namespace BiometricProject.Models.DataBaseModels
 {
-    [Table("Bio_PartyDetails",Schema = "Biometric")]
-    public class PartyDetails
+    [Table("PartySymbols", Schema = "Biometric")]
+    public class PartySymbols
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public string CandidateName { get; set; }
-        public int AssemblyConstituencyId { get; set; }
         public string PartyName { get; set; }
         public byte[] PartySymbolImage { get; set; }
-        public int VoteCount { get; set; }
-        public bool IsEnable { get; set; }
-        public virtual PartySymbols PartySymbols { get; set; }
+        public string PartyType { get; set; }
+        public string PartyChief { get; set; }
     }
 }

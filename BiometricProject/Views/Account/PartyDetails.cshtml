@@ -1,131 +1,133 @@
 ﻿@model BiometricProject.Models.Models.VotingBaseModel
-
-<style>
-
-    .main-content-inner {
-        padding: 0 30px 50px;
-    }
-
-    .horizontal-main-wrapper .main-content-inner {
-        padding: 0 0 50px;
-    }
-
-    .container-border {
-        border: 1px solid #ddd;
-        border-radius: 12px;
-        padding: 15px !important;
-        margin: 15px 0 25px 0;
-        box-shadow: 3px 3px 3px #f0f0f0;
-    }
-
-    .container-border-scroll {
-        border: 1px solid #ddd;
-        border-radius: 12px;
-        padding: 15px !important;
-        margin: 15px 0 15px 0;
-        box-shadow: 3px 3px 3px #f0f0f0;
-        height: 300px;
-        overflow-y: auto;
-    }
-
-    .panel-default > .panel-heading {
-        color: #333;
-        font-size: 18px;
-        background-color: #eee !important;
-        border-color: #e4e5e7;
-        padding: 0;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        margin-bottom: 8px;
-    }
-
-    h4.panel-title {
-        color: #333;
-        font-size: 18px !important;
-    }
-
-    [data-toggle="collapse"].collapsed .fa:before {
-        content: "\f13a";
-    }
-
-    .panel-title .btn:not(:disabled):not(.disabled) {
-        cursor: pointer;
-        color: #2658b5 !important;
-        text-decoration: none;
-        font-size: 16px;
-        font-weight: 600;
-    }
-
-
-</style>
-
-@using (Html.BeginForm("VoteDetails", "Account", FormMethod.Post, new { @id = "voteDetailsFrmId", @class = "form-horizontal", role = "form" }))
-{
-   @Html.HiddenFor(model=>model.userDetails.AadharNumber)
-
-    <div class="main-content-inner">
-        <div class="container-fluid container-border py-2 main">
-
-            <div class="panel-group mt-2" id="accordion" role="tablist" aria-multiselectable="true">
-                <div class="panel panel-default">
-                    <div class="panel-heading" role="tab" id="headingOne">
-                        <h4 class="panel-title">
-                                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" onclick="return false">
-                                    <i class="fa" aria-hidden="true"></i>
-                                    Voting Screen
-                                </button>
-                        </h4>
-                    </div>
-                </div>
-                    <div class="panel panel-default mt-2" id="physicalDetails">
-                        <div class="panel-heading" role="tab" id="headingThree">
-                            <h4 class="panel-title">
-                                <button class="btn btn-link collapsed " data-toggle="collapse" data-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree" onclick="return false">
-                                    <i class="fa" aria-hidden="true"></i>
-                                    List of Candidates
-                                </button>
-                            </h4>
-                        </div>
-
-                        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-                            <div class="panel-body">
-                                <div class="row">
-                                    <div class="col-12 d-flex flex-wrap">
-                                        <div class="table-responsive mt-2">
-                                            <table class="table table-striped" id="tblProductPricingGroup">
-                                                <thead>
-                                                    <tr>
-                                                        <th scope="col" class="width5">S.No</th>
-                                                        <th scope="col" class="width15">Candidate Name</th>
-                                                        <th scope="col" class="width15">Party Name</th>
-                                                        <th scope="col" class="width15">Party Symbol</th>
-                                                        <th scope="col" class="width15">Vote</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @{ int i = 0;}
-                                                    @foreach (var d in Model.partyDetails)
-                                                    {
-                                                    <tr>
-                                                        <td class="width5">@(++i)</td>
-                                                        <td class="width15">@d.CandidateName</td>
-                                                        <td class="width15">@d.PartyName</td>
-                                                        <td class="width15">@d.PartySymbolImage</td>
-                                                        <td class="width15"><input type="radio" id="@d.Id"></td>
-                                                    </tr>
-                                                    }
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
+<html>
+<head>
+    <style>
+        .user-profile img.avatar {
+            height: 30px;
+            width: 30px;
+            border-radius: 50%;
+            margin-right: 12px;
+        }
+    </style>
+</head>
+<body background="">
+    <div class="form-group text-center" style="background-color:gainsboro;">
+        <br />
+        @Html.Label("Online voting screen")
+        <br />
+    </div>
+    <div>
+        <h4><marquee><span>Cast your vote online</span></marquee></h4>
+    </div>
+    <div style="background-color:blue">
+        <a class="float-right" href="~/Account/Login"><i class="fa fa-sign-out" aria-hidden="true"></i> Log Out</a>
+    </div>
+    @using (Html.BeginForm("VoteDetails", "Account", FormMethod.Post, new { @id = "voteDetailsFrmId", @class = "form-horizontal" }))
+    {
+        @Html.HiddenFor(model => model.userDetails.AadharNumber)
+        @Html.HiddenFor(model=>model.VotedPartyId)
+        <div>
+            <div class="form-group">
+                @Html.Label("Name", new { @class = "control-label col-3" })
+                @Html.DisplayFor(model => model.userDetails.AadharDetails.Name, new { @class = "control-label" })
+            </div>
+            <div class="form-group">
+                @Html.Label("Aadhar Number", new { @class = "control-label col-3" })
+                @Html.DisplayFor(model => model.userDetails.AadharNumber, new { @class = "control-label" })
+            </div>
+            <div class="form-group">
+                @Html.Label("Assembly Constituency", new { @class = "control-label col-3" })
+                @Html.DisplayFor(model => model.userDetails.AadharDetails.AssemblyConstituencyId, new { @class = "control-label" })
             </div>
         </div>
-    </div>
-}
+        <div>
+            <table class="table table-striped" id="tblProductPricingGroup">
+                <thead>
+                    <tr>
+                        <th scope="col" class="width5">S.No</th>
+                        <th scope="col" class="width15">Candidate Name</th>
+                        <th scope="col" class="width15">Party Name</th>
+                        <th scope="col" class="width15">Party Symbol</th>
+                        <th scope="col" class="width15">Vote</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int i = 0;}
+                    @foreach (var d in Model.partyDetails)
+                    {
+                        <tr>
+                            <td class="width5">@(++i)</td>
+                            <td class="width15">@d.CandidateName</td>
+                            <td class="width15">@d.PartyName</td>
+                            <td class="width15"><img class="avatar user-thumb" style="border-radius: 50%;width:36px" src='/images/@d.PartySymbols.Id-partysymbol.jpg' alt="avatar"></td>
+                            <td class="width15"><input type="radio" id="@d.Id" name="selectparty" value="@d.PartyName" onchange="return SelectedPartyId(@d.PartySymbols.Id)"></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-12">
+                <div class="text-right"><button type="button" class="btn btn-primary" id="voteSubmitBtnId">Submit</button></div>
+        </div>
+    }
+</body>
+</html>
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        $("#ajaxLoaderDiv").hide();        
+
+    });
+
+    $("#voteSubmitBtnId").click(function () {
+        if ($("#VotedPartyId").val() > 0) {
+            $("#ajaxLoaderDiv").show();
+            $.ajax({
+                url: '@Url.Action("VoteDetails", "Account")',
+                type: 'GET',
+                dataType: 'json',
+                async: false,
+                data: $("#voteDetailsFrmId").serialize(),
+                success: function (data) {
+                    if (data == "Success") {
+                        alert("Your vote submitted successfully");
+                        //swal("Success", "Your vote submitted successfully", "success");
+                        redirectTOLogin();
+                    }
+                    else {
+                        swal("Error", data, "error");
+                    }
+                }
+            });
+            $("#ajaxLoaderDiv").hide();
+        }
+        else {
+            swal("Information", "Please select any one candidate", "info");
+        }
+    });
+
+    //Disable Back Button In All Browsers.
+    function DisableBackButtonAllBrowsers() {
+        window.history.forward()
+    };
+    DisableBackButtonAllBrowsers();
+    window.onload = DisableBackButtonAllBrowsers;
+    window.onpageshow = function (evts) { if (evts.persisted) DisableBackButtonAllBrowsers(); };
+    window.onunload = function () { void (0) };
+
+    function SelectedPartyId(id) {
+        $("#VotedPartyId").val(id);
+    }    
+
+    function redirectTOLogin() {
+        window.location.href = '@Url.Action("Login","Account")';
+    }
+
+</script>

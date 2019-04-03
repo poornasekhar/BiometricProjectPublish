@@ -5,20 +5,19 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
-namespace BiometricProject.Models.DataBaseModels
+namespace BiometricProject.Models.Models
 {
-    [Table("Bio_PartyDetails",Schema = "Biometric")]
-    public class PartyDetails
+    public class PartyRegisterModel
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        public string CandidateName { get; set; }
-        public int AssemblyConstituencyId { get; set; }
+        [Required(ErrorMessage ="Please enter Party Name")]
         public string PartyName { get; set; }
+        [Required(ErrorMessage = "Please select Party Logo")]
         public byte[] PartySymbolImage { get; set; }
-        public int VoteCount { get; set; }
-        public bool IsEnable { get; set; }
-        public virtual PartySymbols PartySymbols { get; set; }
+        public string PartyType { get; set; }
+        [Required(ErrorMessage = "Please enter Party Chief Name")]
+        public string PartyChief { get; set; }
     }
 }

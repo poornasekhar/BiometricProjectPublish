@@ -1,0 +1,95 @@
+﻿@model BiometricProject.Models.Models.PartyRegisterModel
+
+@{
+    ViewBag.Title = "RegisterParty";
+}
+
+<html>
+<body background="">
+    @using (Html.BeginForm("RegisterParty", "Account", FormMethod.Post, new { @id = "registerPartyDetailsFrmId", @class = "form-horizontal", @enctype = "multipart/form-data" }))
+    {
+        @Html.HiddenFor(model => model.Id)
+    <div style="background-color:#808080">
+        <div class="form-group">
+            @Html.Label("Party Name", new { @class = "control-label" })
+            @Html.TextBoxFor(model => model.PartyName, new { @class = "control-label" })
+        </div>
+        <div class="form-group">
+            @Html.Label("Party Chief", new { @class = "control-label" })
+            @Html.TextBoxFor(model => model.PartyChief, new { @class = "control-label" })
+        </div>
+        <div class="form-group">
+            @Html.Label("Party Type", new { @class = "control-label" })
+            @Html.TextBoxFor(model => model.PartyType, new { @class = "control-label" })
+        </div>
+        <br />
+        <div class="form-group">
+            <label>Upload Party Symbol:</label>
+            <div class="input-group col-6">
+                <span class="btn">
+                    <span class="btn btn-primary btn-file">
+                        <input type="file" id="vendorPic" name="vendorPic">
+                    </span>
+                </span>
+            </div>
+            <img id='img-upload' />
+        </div>
+        <br />
+        <button type="submit" class="btn btn-lg btn-primary btn-block text-uppercase" id="registerPartyBtnId">Register</button>
+        <br />
+    </div>
+    }
+</body>
+</html>
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script type="text/javascript">
+
+    //Disable Back Button In All Browsers.
+    function DisableBackButtonAllBrowsers() {
+        window.history.forward()
+    };
+    DisableBackButtonAllBrowsers();
+    window.onload = DisableBackButtonAllBrowsers;
+    window.onpageshow = function (evts) { if (evts.persisted) DisableBackButtonAllBrowsers(); };
+    window.onunload = function () { void (0) };
+
+    $(document).on('change', '.btn-file :file', function () {
+        var input = $(this),
+            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+        input.trigger('fileselect', [label]);
+    });
+
+    $('.btn-file :file').on('fileselect', function (event, label) {
+
+        var input = $(this).parents('.input-group').find(':text'),
+            log = label;
+
+        if (input.length) {
+            input.val(log);
+        } else {
+            if (log) alert(log);
+        }
+
+    });
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#img-upload').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#vendorPic").change(function () {
+        readURL(this);
+    });
+</script>
+

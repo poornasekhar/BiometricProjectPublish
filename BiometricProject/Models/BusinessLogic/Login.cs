@@ -43,6 +43,7 @@ namespace BiometricProject.Models.BusinessLogic
                     userAadharDetails.BiometricImage = userAadharDetails.BiometricImage;
                     userAadharDetails.OTP = random.Next(1000, 9999);
                     userAadharDetails.OTPGeneratedTime = DateTime.Now;
+                    userAadharDetails.BiometricImage=userDetailsModel.BiometricImage;
                     if(SendEmail("OTP for online voting register","OTP is: "+ userAadharDetails.OTP+" valid for 15 minutes only", userAadharDetails.EmailAddress)== "Success")
                     {
                         biometricDBContext.SaveChanges();
@@ -74,6 +75,7 @@ namespace BiometricProject.Models.BusinessLogic
                             BiometricImage = userAadharDetails.BiometricImage
                         };
                         biometricDBContext.UserDetails.Add(userDetails);
+                        userAadharDetails.IsRegistered = true;
                         biometricDBContext.SaveChanges();
                         return true;
                     }
@@ -87,12 +89,16 @@ namespace BiometricProject.Models.BusinessLogic
         }
 
         //Validate Login credentails and generate OTP for login
-        public bool ValidateLoginDetails(UserDetailsModel userDetailsModel)
+        public string ValidateLoginDetails(UserDetailsModel userDetailsModel)
         {
             using (biometricDBContext = new BiometricDBContext())
             {
                 var userDetails = biometricDBContext.UserDetails.Where(i => i.AadharNumber == userDetailsModel.AadharNumber && i.Password == userDetailsModel.Password).FirstOrDefault();
-                if (userDetails != null)
+                if (userDetails != null && userDetails.IsVoted == true)
+                {
+                    return "already voted";
+                }
+                else if (userDetails != null)
                 {
                     Random random = new Random();
                     userDetails.ValidateVoting_OTP = random.Next(1000, 9999);
@@ -100,11 +106,11 @@ namespace BiometricProject.Models.BusinessLogic
                     if (SendEmail("OTP for login into online voting", "OTP is: " + userDetails.ValidateVoting_OTP + " valid for 15 minutes only", userDetails.EmailAddress) == "Success")
                     {
                         biometricDBContext.SaveChanges();
-                        return true;
+                        return "true";
                     }
                 }
             }
-            return false;
+            return "false";
         }
 
         //Validate OTP credentails for login
@@ -171,6 +177,35 @@ namespace BiometricProject.Models.BusinessLogic
                 }
             }
             return Result;
+        }
+
+        public string SumbitVote(VotingBaseModel votingBaseModel)
+        {
+            try
+            {
+                using (biometricDBContext = new BiometricDBContext())
+                {
+                    var aadharDetails = biometricDBContext.AadharDetails.Where(i => i.AadharNumber == votingBaseModel.userDetails.AadharNumber).FirstOrDefault();
+                    var userDetails = biometricDBContext.UserDetails.Where(i => i.AadharNumber == votingBaseModel.userDetails.AadharNumber).FirstOrDefault();
+                    if (votingBaseModel.VotedPartyId == 6)  //For checking NOTA
+                    {
+                        var notaDetails = biometricDBContext.PartyDetails.Where(i => i.PartySymbols.Id == votingBaseModel.VotedPartyId).FirstOrDefault();
+                        notaDetails.VoteCount += 1;
+                    }
+                    else
+                    {
+                        var assemblyConstituencyDetails = biometricDBContext.PartyDetails.Where(i => i.AssemblyConstituencyId == aadharDetails.AssemblyConstituencyId && i.PartySymbols.Id == votingBaseModel.VotedPartyId).FirstOrDefault();
+                        assemblyConstituencyDetails.VoteCount += 1;
+                    }
+                    userDetails.IsVoted = true;
+                    biometricDBContext.SaveChanges();
+                }
+            }
+            catch(Exception e)
+            {
+                return e.Message;
+            }
+            return "Success";
         }
     }
 }

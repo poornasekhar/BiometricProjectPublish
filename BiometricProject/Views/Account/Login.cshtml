@@ -17,23 +17,26 @@
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="~/Content/bootstrap.min.css">
-    <script src="~/Scripts/jquery.validate.min.js"></script>
+    @*<script src="~/Scripts/jquery.validate.min.js"></script>*@
     <script src="~/Scripts/jquery-3.3.1.min.js"></script>
-    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    @*<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 </head>
 
 <body background="~/images/1.jpg">
-    @using (Html.BeginForm("Login", "Account", FormMethod.Post,new { @id="LoginFrmId"}))
+    @using (Html.BeginForm("Login", "Account", FormMethod.Post,new { @id="LoginFrmId", @enctype = "multipart/form-data"}))
     {
-        @Html.AntiForgeryToken()
-        <!-- Navigation -->
+    @Html.AntiForgeryToken()
+ <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark static-top" style="background-color:#2658b5">
         <div class="container">
             <a class="navbar-brand" href="#">
                 <img src="~/images/2.jpg" alt="">
             </a>
-            <marquee><h3><span>Online Voting System</span></h3></marquee>
+            <marquee><h3><span>Login for Online Voting System</span></h3></marquee>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -47,122 +50,166 @@
         </div>
     </nav>
 
-        <!-- Page Content -->
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
-                    <div class="card card-signin my-5">
-                        <div class="card-body">
-                            <h5 class="card-title text-center">User Sign In</h5>
-                            <form class="form-signin">
-                                <div class="form-label-group">
-                                    @Html.TextBoxFor(m => m.AadharNumber, new { @class = "form-control", placeholder = "Aadhar Number" })
-                                    <small>@Html.ValidationMessageFor(model => model.AadharNumber, "", new { @class = "text-danger" })</small>
-                                    <small id="UserNameId" class="text-danger"></small>
-                                </div>
-                                <br />
-                                <div class="form-label-group">
-                                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Password" })
-                                    <small>@Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })</small>
-                                </div>
-                                <br />
-                                <div class="form-group">
-                                    <label>Upload Image:</label>
-                                    <div class="input-group col-6">
-                                        <span class="btn">
-                                            <span class="btn btn-primary btn-file">
-                                                <input type="file" id="vendorPic" name="vendorPic">
-                                            </span>
-                                        </span>
-                                    </div>
-                                    <img id='img-upload' />
-                                </div>
-                                <br />
-                                <button type="button" class="btn btn-lg btn-primary btn-block text-uppercase" id="signInId">Sign In</button>
-                                <br />
-                                <div class="custom-control custom-checkbox mb-3">
-                                    <small><a class="text-danger float-left" href="~/Account/SignUp">New Member?</a></small>
-                                    <small><a class="text-danger float-right" href="javascript:void(0)" onclick="return ValidateValues();">Forgot Password ?</a></small>
-                                </div>
-                                <br />
-                            </form>
-                            <div id="checkOTPValidate" style="display:none">
-                                <div class="form-label-group">
-                                    @Html.PasswordFor(m => m.OTP, new { @class = "form-control", placeholder = "OTP" })
-                                    <small>@Html.ValidationMessageFor(model => model.OTP, "", new { @class = "text-danger" })</small>
-                                </div>
-                                <br />
-                                <button type="button" class="btn btn-lg btn-success btn-block text-uppercase" id="VerifyBtnId">Verify</button>
+ <!-- Page Content -->
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                <div class="card card-signin my-5" style="background-color:#94b2ea;">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">User Sign In</h5>
+                        <form class="form-signin">
+                            <div class="form-label-group">
+                                @Html.TextBoxFor(m => m.AadharNumber, new { @class = "form-control", placeholder = "Aadhar Number" })
+                                <small>@Html.ValidationMessageFor(model => model.AadharNumber, "", new { @class = "text-danger" })</small>
+                                <small id="UserNameId" class="text-danger"></small>
                             </div>
+                            <br />
+                            <div class="form-label-group">
+                                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Password" })
+                                <small>@Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })</small>
+                            </div>
+                            <br />
+                            <div class="form-group">
+                                <label>Upload Image:</label>
+                                <div class="input-group col-6">
+                                    <span class="btn">
+                                        <span class="btn btn-primary btn-file">
+                                            <input type="file" id="vendorPic" name="vendorPic">
+                                        </span>
+                                    </span>
+                                </div>
+                                <img id='img-upload' />
+                            </div>
+                            <br />
+                            <button type="button" class="btn btn-lg btn-primary btn-block text-uppercase" id="signInId">Sign In</button>
+                            <br />
+                            <div class="custom-control custom-checkbox mb-3">
+                                <small><a class="text-danger float-left" href="~/Account/SignUp">New Member?</a></small>
+                                <small><a class="text-danger float-right" href="javascript:void(0)" onclick="return ValidateValues();">Forgot Password ?</a></small>
+                            </div>
+                            <br />
+                        </form>
+                        <div id="checkOTPValidate" style="display:none">
+                            <div class="form-label-group">
+                                @Html.PasswordFor(m => m.OTP, new { @class = "form-control", placeholder = "OTP" })
+                                <small>@Html.ValidationMessageFor(model => model.OTP, "", new { @class = "text-danger" })</small>
+                            </div>
+                            <br />
+                            <button type="button" class="btn btn-lg btn-success btn-block text-uppercase" id="VerifyBtnId">Verify</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     }
 </body>
 </html>
+<div id="ajaxLoaderDiv" style="position: fixed;z-index: 9000;height: 100%;width: 100%;top: 0;left: 0;background-color: black;filter: alpha(opacity=60);opacity: 0.6;-moz-opacity: 0.8;">
+    <div id="ajaxCenterDiv" style="z-index: 1000;margin: 300px auto;padding: 10px;width: 130px; border-radius: 10px;filter: alpha(opacity=100);opacity: 1;-moz-opacity: 1;">
+        <img src="~/images/ajax_loader.gif" alt="Loading..." style="height: 128px;width: 128px;" />
+    </div>
+</div>
 <script type="text/javascript">
+    //Disable Back Button In All Browsers.
+    function DisableBackButtonAllBrowsers() {
+        window.history.forward()
+    };
+    DisableBackButtonAllBrowsers();
+    window.onload = DisableBackButtonAllBrowsers;
+    window.onpageshow = function (evts) { if (evts.persisted) DisableBackButtonAllBrowsers(); };
+    window.onunload = function () { void (0) };
 
     $(document).ready(function () {
-        window.setTimeout(function () {
-            $("#success-alert").fadeTo(2000, 500).slideUp(500, function () {
-                $("#success-alert").slideUp(500);
-            });
-        }, 3000);
 
-        $("#signInId").click(function () {
+        $("#ajaxLoaderDiv").hide();
 
+    });
+
+    $("#signInId").click(function () {
+        var Allow = true;
+        if ($("#AadharNumber").val() == "") {
+            $('span[data-valmsg-for="AadharNumber"]').text('Please Enter Aadhar Number');
+            Allow = false;
+        }
+        else {
+            $('span[data-valmsg-for="AadharNumber"]').text('');
+        }
+        if ($("#Password").val() == "") {
+            $('span[data-valmsg-for="Password"]').text("Please Enter Password");
+            Allow = false;
+        }
+        else {
+            $('span[data-valmsg-for="Password"]').text("");
+        }
+        if (Allow == false)
+            return false;
+        else {
+            $("#ajaxLoaderDiv").show();
             $.ajax({
                 url: '@Url.Action("ValidateLoginDetails", "Account")',
                 type: 'GET',
                 dataType: 'json',
                 data: $("#LoginFrmId").serialize(),
                 success: function (data) {
-                    if (data) {
+                    if (data == "already voted") {
+                        $("#ajaxLoaderDiv").hide();
+                        swal("Information", "User already voted", "info");
+                        return false;
+                    }
+                    else if (data == "true") {
+                        $("#ajaxLoaderDiv").hide();
                         $("#checkOTPValidate").css("display", "block");
                         $("#signInId").css("display", "none");
-                        alert("OTP Sended to registered mail, please verify OTP");
+                        swal("Success", "OTP Sended to registered mail, please verify OTP", "success");
                         return false;
                     }
                     else {
-                        alert("Invalid credentials");
+                        //alert("Invalid credentials");
+                        $("#ajaxLoaderDiv").hide();
+                        swal("Failure", "Invalid credentials", "error");
                     }
                 }
             });
-        });
+        }
+    });
 
-        $("#VerifyBtnId").click(function () {
-
-            $.ajax({
-                url: '@Url.Action("ValidateOTPLoginDetails", "Account")',
-                type: 'GET',
-                dataType: 'json',
-                data: $("#LoginFrmId").serialize(),
-                success: function (data) {
-                    if (data == "true") {
-                        window.location.href = '@Url.Action("PartyDetails","Account")?aadharNumber=' + $("#AadharNumber").val();
-                    }
-                    else if (data == "false") {
-                        alert("OTP incorrect/OTP expired");
-                    }
-                    else if (data == "already voted"){
-                        alert("User already voted");
-                    }
+    $("#VerifyBtnId").click(function () {
+        $("#ajaxLoaderDiv").show();
+        var form = $('#LoginFrmId');
+        var token = $('input[name="__RequestVerificationToken"]', form).val();
+        $.ajax({
+            url: '@Url.Action("ValidateOTPLoginDetails", "Account")',
+            type: 'GET',
+            dataType: 'json',
+            data: $("#LoginFrmId").serialize(),
+            success: function (data) {
+                if (data == "true") {
+                    $("#ajaxLoaderDiv").hide();
+                    window.location.href = '@Url.Action("PartyDetails","Account")?aadharNumber=' + $("#AadharNumber").val() + "&OTP=" + $("#OTP").val();
                 }
-            });
+                else if (data == "false") {
+                    //alert("OTP incorrect/OTP expired");
+                    $("#ajaxLoaderDiv").hide();
+                    swal("Failure", "Invalid OTP/OTP expired", "error");
+                }
+                else if (data == "already voted") {
+                    //alert("User already voted");
+                    $("#ajaxLoaderDiv").hide();
+                    swal("Information", "User already voted", "info");
+                }
+            }
         });
+    });
 
-        $("#LoginFrmId").submit(function () {
-
-        });
+    $("#LoginFrmId").submit(function () {
 
     });
 
     function ValidateValues() {
         var Allow = true;
         if ($("#AadharNumber").val() == "") {
-            $("#UserNameId").text("Please Aadhar Number");
+            $("#UserNameId").text("Please Enter Aadhar Number");
             Allow = false;
         }
         else {

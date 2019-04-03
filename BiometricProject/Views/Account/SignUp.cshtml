@@ -4,12 +4,20 @@
     ViewBag.Title = "SignUp";
 }
 
-
-@using (Html.BeginForm("SignUp", "Account", FormMethod.Post,new { @id="userDetailsSignUpFrmId"}))
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="~/images/2.jpg">
+    <title>Register for Online Vote</title>
+</head>
+@using (Html.BeginForm("SignUp", "Account", FormMethod.Post, new { @id = "userDetailsSignUpFrmId", @enctype = "multipart/form-data"}))
 {
     @Html.AntiForgeryToken()
-
-    <div class="container">
+    <body background="~/images/3.jpg">
+        <div class="container">
             <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
                 <div class="card card-signin my-5">
                     <div class="card-body">
@@ -24,19 +32,19 @@
                             <div class="form-label-group">
                                 @Html.Label("Name (As per Aadhar)")
                                 @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "Name" })
-                                <small>@Html.ValidationMessageFor(model => model.AadharNumber, "", new { @class = "text-danger" })</small>
+                                <small>@Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })</small>
                             </div>
                             <br />
                             <div class="form-label-group">
                                 @Html.Label("Phone (As per Aadhar)")
                                 @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", placeholder = "Phone Number" })
-                                <small>@Html.ValidationMessageFor(model => model.AadharNumber, "", new { @class = "text-danger" })</small>
+                                <small>@Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })</small>
                             </div>
                             <br />
                             <div class="form-label-group">
                                 @Html.Label("Email (As per Aadhar)")
                                 @Html.TextBoxFor(m => m.EmailAddress, new { @class = "form-control", placeholder = "Email Address" })
-                                <small>@Html.ValidationMessageFor(model => model.AadharNumber, "", new { @class = "text-danger" })</small>
+                                <small>@Html.ValidationMessageFor(model => model.EmailAddress, "", new { @class = "text-danger" })</small>
                             </div>
                             <br />
                             <div class="form-label-group">
@@ -77,40 +85,113 @@
                     </div>
                 </div>
             </div>
-    </div>
+        </div>
+    </body>
 }
-<script src="~/Scripts/jquery.validate.min.js"></script>
+
+</html>
+@*<script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery-3.3.1.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>*@
 <script src="~/Scripts/jquery-3.3.1.min.js"></script>
-<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 <script type="text/javascript">
 
-    $("#submitId").click(function () {
+    $(document).ready(function () {
 
-        $.ajax({
-            url: '@Url.Action("ValidateAadharDetails", "Account")',
-            type: 'GET',
-            dataType: 'json',
-            data: $("#userDetailsSignUpFrmId").serialize(),
-            success: function (data) {
-                if (data == "true") {
-                    $("#oTPValidateDiv").css("display", "block");
-                    $("#submitId").css("display", "none");
-                    alert("OTP Sended to registered mail");
-                    return false;
-                }
-                else if (data == "user already registerd") {
-                    alert("User already registered");
-                }
-                else {
-                    alert("Entered details are not matched with aadhar database");
-                }
+        $("#ajaxLoaderDiv").hide();        
+
+    });
+
+    $("#submitId").click(function () {
+        var Allow = true;
+        if ($("#AadharNumber").val() == "") {
+            $('span[data-valmsg-for="AadharNumber"]').text('Please Enter Aadhar Number');
+            Allow = false;
+        }
+        else {
+            $('span[data-valmsg-for="AadharNumber"]').text('');
+        }
+        if ($("#Name").val() == "") {
+            $('span[data-valmsg-for="Name"]').text("Please Enter Name");
+            Allow = false;
+        }
+        else {
+            $('span[data-valmsg-for="Name"]').text("");
+        }
+        if ($("#PhoneNumber").val() == "") {
+            $('span[data-valmsg-for="PhoneNumber"]').text("Please Enter Phone Number");
+            Allow = false;
+        }
+        else {
+            $('span[data-valmsg-for="PhoneNumber"]').text("");
+        }
+        if ($("#EmailAddress").val() == "") {
+            $('span[data-valmsg-for="EmailAddress"]').text("Please Enter Email Address");
+            Allow = false;
+        }
+        else {
+            $('span[data-valmsg-for="EmailAddress"]').text("");
+        }
+        if ($("#Password").val() == "") {
+            $('span[data-valmsg-for="Password"]').text("Please Enter Password");
+            Allow = false;
+        }
+        else {
+            $('span[data-valmsg-for="Password"]').text("");
+        }
+        if ($("#ConfirmPassword").val() == "") {
+            $('span[data-valmsg-for="ConfirmPassword"]').text("Please Enter Confirm Password");
+            Allow = false;
+        }
+        else {
+            $('span[data-valmsg-for="ConfirmPassword"]').text("");
+            if ($("#ConfirmPassword").val() != $("#Password").val()) {
+                $('span[data-valmsg-for="ConfirmPassword"]').text("Password and Confirm Password are not matched");
+                Allow = false;
             }
-        });
+            else {
+                $('span[data-valmsg-for="ConfirmPassword"]').text("");
+            }
+        }
+        if (Allow == false)
+            return false;
+        else {
+            $("#ajaxLoaderDiv").show();
+            $.ajax({
+                url: '@Url.Action("ValidateAadharDetails", "Account")',
+                type: 'GET',
+                dataType: 'json',
+                data: $("#userDetailsSignUpFrmId").serialize(),
+                success: function (data) {
+                    if (data == "true") {
+                        $("#ajaxLoaderDiv").hide();
+                        $("#oTPValidateDiv").css("display", "block");
+                        $("#submitId").css("display", "none");
+                        //alert("OTP Sended to registered mail");
+                        swal("Success", "OTP Sended to registered mail", "success");
+                        return false;
+                    }
+                    else if (data == "user already registerd") {
+                        $("#ajaxLoaderDiv").hide();
+                        //alert("User already registered");
+                        swal("Information", "User already registered", "info");
+                    }
+                    else {
+                        $("#ajaxLoaderDiv").hide();
+                        //alert("Entered details are not matched with aadhar database");
+                        swal("Error", "Entered details are not matched with aadhar database", "error");
+                    }
+                }
+            });
+        }
     });
 
     $("#verifyBtnId").click(function () {
-
+        $("#ajaxLoaderDiv").show();
         $.ajax({
             url: '@Url.Action("ValidateOTP", "Account")',
             type: 'GET',
@@ -118,15 +199,63 @@
             data: $("#userDetailsSignUpFrmId").serialize(),
             success: function (data) {
                 if (data) {
+                    $("#ajaxLoaderDiv").hide();
                     alert("User details saved successfully");
+                    //swal("Success", "User details saved successfully", "success");
                     window.location.href = '@Url.Action("Login","Account")';
                 }
                 else {
-                    alert("OTP incorrect/OTP expired");
+                    $("#ajaxLoaderDiv").hide();
+                    //alert("OTP incorrect/OTP expired");
+                    swal("Error", "OTP incorrect/OTP expired", "error");
                 }
             }
         });
+    });
 
+    //Disable Back Button In All Browsers.
+    function DisableBackButtonAllBrowsers() {
+        window.history.forward()
+    };
+    DisableBackButtonAllBrowsers();
+    window.onload = DisableBackButtonAllBrowsers;
+    window.onpageshow = function (evts) { if (evts.persisted) DisableBackButtonAllBrowsers(); };
+    window.onunload = function () { void (0) };
+    
+
+    $(document).on('change', '.btn-file :file', function () {
+        var input = $(this),
+            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+        input.trigger('fileselect', [label]);
+    });
+
+    $('.btn-file :file').on('fileselect', function (event, label) {
+
+        var input = $(this).parents('.input-group').find(':text'),
+            log = label;
+
+        if (input.length) {
+            input.val(log);
+        } else {
+            if (log) alert(log);
+        }
+
+    });
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#img-upload').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#vendorPic").change(function () {
+        readURL(this);
     });
 
 

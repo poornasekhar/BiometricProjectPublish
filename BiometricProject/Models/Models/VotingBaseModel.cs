@@ -10,5 +10,6 @@ namespace BiometricProject.Models.Models
     {
         public UserDetails userDetails { get; set; }
         public List<PartyDetails> partyDetails { get; set; }
+        public int VotedPartyId { get; set; }
     }
 }
