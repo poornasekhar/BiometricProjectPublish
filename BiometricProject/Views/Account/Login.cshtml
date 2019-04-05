@@ -61,7 +61,6 @@
                             <div class="form-label-group">
                                 @Html.TextBoxFor(m => m.AadharNumber, new { @class = "form-control", placeholder = "Aadhar Number" })
                                 <small>@Html.ValidationMessageFor(model => model.AadharNumber, "", new { @class = "text-danger" })</small>
-                                <small id="UserNameId" class="text-danger"></small>
                             </div>
                             <br />
                             <div class="form-label-group">
@@ -77,6 +76,7 @@
                                             <input type="file" id="vendorPic" name="vendorPic">
                                         </span>
                                     </span>
+                                    <small><span id="picValidationMessage" class="text-danger"></span></small>
                                 </div>
                                 <img id='img-upload' />
                             </div>
@@ -85,7 +85,7 @@
                             <br />
                             <div class="custom-control custom-checkbox mb-3">
                                 <small><a class="text-danger float-left" href="~/Account/SignUp">New Member?</a></small>
-                                <small><a class="text-danger float-right" href="javascript:void(0)" onclick="return ValidateValues();">Forgot Password ?</a></small>
+                                <small><a class="text-danger float-right" href="javascript:void(0)" onclick="return resetPasswordRedirect();">Forgot Password ?</a></small>
                             </div>
                             <br />
                         </form>
@@ -141,6 +141,13 @@
         }
         else {
             $('span[data-valmsg-for="Password"]').text("");
+        }
+        if ($("#vendorPic").val() == "") {
+            $("#picValidationMessage").text("Please upload image");
+            Allow = false;
+        }
+        else {
+            $("#picValidationMessage").text("");
         }
         if (Allow == false)
             return false;
@@ -202,31 +209,21 @@
         });
     });
 
-    $("#LoginFrmId").submit(function () {
-
-    });
-
-    function ValidateValues() {
+    function resetPasswordRedirect() {
         var Allow = true;
         if ($("#AadharNumber").val() == "") {
-            $("#UserNameId").text("Please Enter Aadhar Number");
+            $('span[data-valmsg-for="AadharNumber"]').text('Please Enter Aadhar Number');
             Allow = false;
         }
         else {
-            $("#UserNameId").text("");
+            $('span[data-valmsg-for="AadharNumber"]').text('');
         }
         if (Allow == false)
             return false;
-        else if ($("#CompanyName").val() != "" && $("#UserName").val() != "") {
-            window.location.href = ' @Url.Action("ForgotPassword", "Account")?companyName=' + $("#CompanyName").val() + '&userName=' + $("#UserName").val();
+        else {
+            window.location.href = ' @Url.Action("ResetPassword", "Account")?aadharNumber=' + $("#AadharNumber").val();
         }
     }
-
-    $("#AadharNumber").keyup(function () {
-        if ($("#AadharNumber").val() != "") {
-            $("#UserNameId").text("");
-        }
-    });
 
     $(document).on('change', '.btn-file :file', function () {
         var input = $(this),

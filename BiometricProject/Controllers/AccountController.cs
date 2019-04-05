@@ -50,6 +50,7 @@ namespace BiometricProject.Controllers
         //[ValidateAntiForgeryToken]
         public JsonResult ValidateAadharDetails(UserDetailsModel userDetailsModel,HttpPostedFileBase logo)
         {
+            string purpose = "new registration"; //For differenciate between reset password and new registration
             HttpPostedFileBase vendorPic = Request.Files["vendorPic"];
                     if (vendorPic != null && vendorPic.ContentLength > 0)
                     {
@@ -58,7 +59,7 @@ namespace BiometricProject.Controllers
                         vendorPic.InputStream.Read(userDetailsModel.BiometricImage, 0, length);
                     }
             var userAadharDetails = biometricDBContext.AadharDetails.Where(i => i.AadharNumber == userDetailsModel.AadharNumber && i.IsEnable == true && i.IsRegistered == false).FirstOrDefault();
-            var result = login.ValidateAadharDetails(userDetailsModel);
+            var result = login.ValidateAadharDetails(userDetailsModel, purpose);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
@@ -185,6 +186,43 @@ namespace BiometricProject.Controllers
             var votingMessage = login.SumbitVote(votingBaseModel);
             return Json(votingMessage, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult ResetPassword(long aadharNumber)
+        {
+            return View();
+        }
+
+        //[ValidateAntiForgeryToken]
+        public JsonResult ValidateAadharDetailsForResetPassword(UserDetailsModel userDetailsModel)
+        {
+            string purpose = "reset password"; //For differenciate between reset password and new registration
+            if(!biometricDBContext.AadharDetails.Any(a=>a.AadharNumber== userDetailsModel.AadharNumber))
+            {
+                return Json("false", JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                var result = login.ValidateAadharDetails(userDetailsModel, purpose);
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        //[ValidateAntiForgeryToken]
+        public JsonResult ResetUserPassword(UserDetailsModel userDetailsModel)
+        {
+            var userDetails = biometricDBContext.UserDetails.Where(i => i.AadharNumber == userDetailsModel.AadharNumber).FirstOrDefault();
+            var aadharDetails= biometricDBContext.AadharDetails.Where(i => i.AadharNumber == userDetailsModel.AadharNumber).FirstOrDefault();
+            if (userDetails != null && aadharDetails.OTP==userDetailsModel.OTP && aadharDetails.OTPGeneratedTime.Value.AddMinutes(5)>=DateTime.Now)
+            {
+                userDetails.Password = userDetailsModel.Password;
+                biometricDBContext.SaveChanges();
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
+        }        
 
         // GET: Account
         public ActionResult Index()

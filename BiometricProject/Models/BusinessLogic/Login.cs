@@ -28,13 +28,13 @@ namespace BiometricProject.Models.BusinessLogic
             return partyDetails;
         }
 
-        public string ValidateAadharDetails(UserDetailsModel userDetailsModel)
+        public string ValidateAadharDetails(UserDetailsModel userDetailsModel,string purpose)
         {
             using (biometricDBContext = new BiometricDBContext())
             {
                 Random random = new Random();
                 var userAadharDetails = biometricDBContext.AadharDetails.Where(i => i.AadharNumber == userDetailsModel.AadharNumber && i.IsEnable==true).FirstOrDefault();
-                if (userAadharDetails.IsRegistered)
+                if (userAadharDetails.IsRegistered && purpose== "new registration")
                 {
                     return "user already registerd";
                 }
@@ -44,7 +44,8 @@ namespace BiometricProject.Models.BusinessLogic
                     userAadharDetails.OTP = random.Next(1000, 9999);
                     userAadharDetails.OTPGeneratedTime = DateTime.Now;
                     userAadharDetails.BiometricImage=userDetailsModel.BiometricImage;
-                    if(SendEmail("OTP for online voting register","OTP is: "+ userAadharDetails.OTP+" valid for 15 minutes only", userAadharDetails.EmailAddress)== "Success")
+                    string subject = purpose == "new registration" ? "Online voting registration OTP" : "Online voting reset password OTP";
+                    if (SendEmail(subject, "OTP is: "+ userAadharDetails.OTP+" valid for 15 minutes only", userAadharDetails.EmailAddress)== "Success")
                     {
                         biometricDBContext.SaveChanges();
                         return "true";

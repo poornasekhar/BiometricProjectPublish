@@ -344,6 +344,7 @@
     <Content Include="Views\Account\SignUp.cshtml" />
     <Content Include="Views\Account\PartyDetails.cshtml" />
     <Content Include="Views\Account\RegisterParty.cshtml" />
+    <Content Include="Views\Account\ResetPassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201903190648305_First.resx">
