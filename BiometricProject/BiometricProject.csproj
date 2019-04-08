@@ -259,8 +259,18 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="images\1-partysymbol.jpg" />
     <Content Include="images\1.jpg" />
+    <Content Include="images\2-partysymbol.jpg" />
     <Content Include="images\2.jpg" />
+    <Content Include="images\3-partysymbol.jpg" />
+    <Content Include="images\3.jpg" />
+    <Content Include="images\4-partysymbol.jpg" />
+    <Content Include="images\4.jpg" />
+    <Content Include="images\5-partysymbol.jpg" />
+    <Content Include="images\5.jpg" />
+    <Content Include="images\6-partysymbol.jpg" />
+    <Content Include="images\ajax_loader.gif" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -335,11 +345,6 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
-    <Content Include="Views\Account\Create.cshtml" />
-    <Content Include="Views\Account\Delete.cshtml" />
-    <Content Include="Views\Account\Details.cshtml" />
-    <Content Include="Views\Account\Edit.cshtml" />
-    <Content Include="Views\Account\Index.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\SignUp.cshtml" />
     <Content Include="Views\Account\PartyDetails.cshtml" />

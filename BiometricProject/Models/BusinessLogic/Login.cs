@@ -34,23 +34,26 @@ namespace BiometricProject.Models.BusinessLogic
             {
                 Random random = new Random();
                 var userAadharDetails = biometricDBContext.AadharDetails.Where(i => i.AadharNumber == userDetailsModel.AadharNumber && i.IsEnable==true).FirstOrDefault();
-                if (userAadharDetails.IsRegistered && purpose== "new registration")
+                if (userAadharDetails != null)
                 {
-                    return "user already registerd";
-                }
-                else if (userAadharDetails!=null && userAadharDetails.PhoneNumber==userDetailsModel.PhoneNumber && userAadharDetails.EmailAddress.ToLower()== userDetailsModel.EmailAddress.ToLower() && userAadharDetails.Name.ToLower()==userDetailsModel.Name.ToLower())
-                {
-                    userAadharDetails.BiometricImage = userAadharDetails.BiometricImage;
-                    userAadharDetails.OTP = random.Next(1000, 9999);
-                    userAadharDetails.OTPGeneratedTime = DateTime.Now;
-                    userAadharDetails.BiometricImage=userDetailsModel.BiometricImage;
-                    string subject = purpose == "new registration" ? "Online voting registration OTP" : "Online voting reset password OTP";
-                    if (SendEmail(subject, "OTP is: "+ userAadharDetails.OTP+" valid for 15 minutes only", userAadharDetails.EmailAddress)== "Success")
+                    if (userAadharDetails.IsRegistered && purpose == "new registration")
                     {
-                        biometricDBContext.SaveChanges();
-                        return "true";
+                        return "user already registerd";
                     }
-                }
+                    else if (userAadharDetails != null && userAadharDetails.PhoneNumber == userDetailsModel.PhoneNumber && userAadharDetails.EmailAddress.ToLower() == userDetailsModel.EmailAddress.ToLower() && userAadharDetails.Name.ToLower() == userDetailsModel.Name.ToLower())
+                    {
+                        userAadharDetails.BiometricImage = userAadharDetails.BiometricImage;
+                        userAadharDetails.OTP = random.Next(1000, 9999);
+                        userAadharDetails.OTPGeneratedTime = DateTime.Now;
+                        userAadharDetails.BiometricImage = userDetailsModel.BiometricImage;
+                        string subject = purpose == "new registration" ? "Online voting registration OTP" : "Online voting reset password OTP";
+                        if (SendEmail(subject, "OTP is: " + userAadharDetails.OTP + " valid for 15 minutes only", userAadharDetails.EmailAddress) == "Success")
+                        {
+                            biometricDBContext.SaveChanges();
+                            return "true";
+                        }
+                    }
+                }                
             }
             return "false";
         }
