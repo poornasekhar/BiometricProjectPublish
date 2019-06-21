@@ -68,9 +68,10 @@ namespace BiometricProject.Models.BusinessLogic
                     var userAadharDetails = biometricDBContext.AadharDetails.Where(i => i.AadharNumber == userDetailsModel.AadharNumber && i.IsEnable == true).FirstOrDefault();
                     if (userAadharDetails != null && userAadharDetails.OTP == userDetailsModel.OTP && userAadharDetails.OTPGeneratedTime.Value.AddMinutes(15) > DateTime.Now)
                     {
+                        userAadharDetails.BiometricImage = userAadharDetails.BiometricImage;
                         UserDetails userDetails = new UserDetails()
                         {
-                            //AadharDetails = userAadharDetails,
+                            AadharDetails = userAadharDetails,
                             AadharNumber = userAadharDetails.AadharNumber,
                             EmailAddress = userAadharDetails.EmailAddress,
                             PhoneNumber = userAadharDetails.PhoneNumber,

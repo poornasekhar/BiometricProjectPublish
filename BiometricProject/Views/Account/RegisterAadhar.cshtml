@@ -1,0 +1,143 @@
+﻿@model BiometricProject.Models.Models.AadharDetailsModel
+
+@{
+    ViewBag.Title = "AadharDetails";
+}
+
+<html>
+<body background="">
+    @using (Html.BeginForm("RegisterAadhar", "Account", FormMethod.Post, new { @id = "aadharDetailsFrmId", @class = "form-horizontal", @enctype = "multipart/form-data" }))
+    {
+        <div class="container">
+            <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                <div class="card card-signin my-5">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Aadhar Registration</h5>
+                        <form class="form-signin">
+                            <div class="form-label-group">
+                                @Html.Label("Aadhar Number")
+                                @Html.TextBoxFor(m => m.AadharNumber, new { @class = "form-control", placeholder = "Aadhar Number" })
+                                <small>@Html.ValidationMessageFor(model => model.AadharNumber, "", new { @class = "text-danger" })</small>
+                            </div>
+                            <br />
+                            <div class="form-label-group">
+                                @Html.Label("Name")
+                                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "Name" })
+                                <small>@Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })</small>
+                            </div>
+                            <br />
+                            <div class="form-label-group">
+                                @Html.Label("Date of Birth")
+                                @Html.TextBoxFor(m => m.DateOfBirth, new { @class = "form-control", @type="date" })
+                                <small>@Html.ValidationMessageFor(model => model.DateOfBirth, "", new { @class = "text-danger" })</small>
+                            </div>
+                            <br />
+                            <div class="form-label-group">
+                                @Html.Label("Phone Number")
+                                @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", placeholder = "Phone Number" })
+                                <small>@Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })</small>
+                            </div>
+                            <br />
+                            <div class="form-label-group">
+                                @Html.Label("Email Address")
+                                @Html.TextBoxFor(m => m.EmailAddress, new { @class = "form-control", placeholder = "Email Address" })
+                                <small>@Html.ValidationMessageFor(model => model.EmailAddress, "", new { @class = "text-danger" })</small>
+                            </div>
+                            <br />
+                            <div class="form-label-group">
+                                @Html.Label("Address")
+                                @Html.TextAreaFor(m => m.Address, new { @class = "form-control", placeholder = "Address" })
+                                <small>@Html.ValidationMessageFor(model => model.EmailAddress, "", new { @class = "text-danger" })</small>
+                            </div>
+                            <br />
+                            <div class="form-label-group">
+                                @Html.Label("Assembly Constituency Id")
+                                @Html.TextBoxFor(m => m.AssemblyConstituencyId, new { @class = "form-control", placeholder = "Assembly Constituency Id" })
+                                <small>@Html.ValidationMessageFor(model => model.AssemblyConstituencyId, "", new { @class = "text-danger" })</small>
+                            </div>
+                            <br />
+                            <div class="form-group">
+                                <label>Upload Biometric Image:</label>
+                                <div class="input-group col-6">
+                                    <span class="btn">
+                                        <span class="btn btn-primary btn-file">
+                                            <input type="file" id="vendorPic" name="vendorPic">
+                                        </span>
+                                    </span>
+                                    <small><span id="picValidationMessage" class="text-danger"></span></small>
+                                </div>
+                                <img id='img-upload' />
+                            </div>
+                            <br />
+                            <button type="submit" class="btn btn-lg btn-primary btn-block text-uppercase" id="registerAadharBtnId">Register</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</body>
+</html>
+
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script type="text/javascript">
+
+    @*$(document).ready(function () {
+        if (@Model.ReturnMessageType!= null && @Model.ReturnMessageType!= "null") {
+            if (@Model.ReturnMessageType.ToString()== "Success") {
+                swal("Success", @Model.ReturnMessage, "success");
+            }
+            else {
+                swal("Error", @Model.ReturnMessage, "error");
+            }
+        }
+    });*@
+
+    //Disable Back Button In All Browsers.
+    function DisableBackButtonAllBrowsers() {
+        window.history.forward()
+    };
+    DisableBackButtonAllBrowsers();
+    window.onload = DisableBackButtonAllBrowsers;
+    window.onpageshow = function (evts) { if (evts.persisted) DisableBackButtonAllBrowsers(); };
+    window.onunload = function () { void (0) };
+
+    $(document).on('change', '.btn-file :file', function () {
+        var input = $(this),
+            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+        input.trigger('fileselect', [label]);
+    });
+
+    $('.btn-file :file').on('fileselect', function (event, label) {
+
+        var input = $(this).parents('.input-group').find(':text'),
+            log = label;
+
+        if (input.length) {
+            input.val(log);
+        } else {
+            if (log) alert(log);
+        }
+
+    });
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#img-upload').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    $("#vendorPic").change(function () {
+        readURL(this);
+    });
+</script>
+

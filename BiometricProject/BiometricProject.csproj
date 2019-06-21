@@ -195,6 +195,7 @@
     <Compile Include="Models\DataBaseModels\PartyDetails.cs" />
     <Compile Include="Models\DataBaseModels\PartySymbols.cs" />
     <Compile Include="Models\DataBaseModels\UserDetails.cs" />
+    <Compile Include="Models\Models\AadharDetailsModel.cs" />
     <Compile Include="Models\Models\PartyRegisterModel.cs" />
     <Compile Include="Models\Models\UserDetailsModel.cs" />
     <Compile Include="Models\Models\VotingBaseModel.cs" />
@@ -350,6 +351,7 @@
     <Content Include="Views\Account\PartyDetails.cshtml" />
     <Content Include="Views\Account\RegisterParty.cshtml" />
     <Content Include="Views\Account\ResetPassword.cshtml" />
+    <Content Include="Views\Account\RegisterAadhar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201903190648305_First.resx">
@@ -407,7 +409,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>54742</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:54742/</IISUrl>
+          <IISUrl>http://localhost:54752/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

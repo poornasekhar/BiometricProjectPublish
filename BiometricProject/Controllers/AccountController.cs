@@ -65,13 +65,21 @@ namespace BiometricProject.Controllers
 
         //[ValidateAntiForgeryToken]
         //OTP Validate and create user in database
-        public JsonResult ValidateOTP(UserDetailsModel userDetailsModel)
+        public JsonResult ValidateOTP(UserDetailsModel userDetailsModel, HttpPostedFileBase logo)
         {
+            HttpPostedFileBase vendorPic = Request.Files["vendorPic"];
+            if (vendorPic != null && vendorPic.ContentLength > 0)
+            {
+                int length = vendorPic.ContentLength;
+                userDetailsModel.BiometricImage = new byte[length];
+                vendorPic.InputStream.Read(userDetailsModel.BiometricImage, 0, length);
+            }
             var result = login.ValidateOTP(userDetailsModel);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         //[ValidateAntiForgeryToken]
+        //[HttpPost]
         //Validate Login credentails and generate OTP for login
         public JsonResult ValidateLoginDetails(UserDetailsModel userDetailsModel,HttpPostedFileBase logo)
         {
@@ -87,6 +95,7 @@ namespace BiometricProject.Controllers
         }
 
         //[ValidateAntiForgeryToken]
+        //[HttpPost]
         //Validate Login credentails and generate OTP for login
         public JsonResult ValidateOTPLoginDetails(UserDetailsModel userDetailsModel)
         {
@@ -162,8 +171,10 @@ namespace BiometricProject.Controllers
                             PartyType = partyRegisterModel.PartyType,
                             PartySymbolImage = partyRegisterModel.PartySymbolImage,
                         };
-                        if(partyRegisterModel.Id==0)
-                        biometricDBContext.PartySymbols.Add(partySymbols);
+                        if (partyRegisterModel.Id == 0)
+                        {
+                            biometricDBContext.PartySymbols.Add(partySymbols);
+                        }
                         else
                         {
                             var registeredPartyDetails = biometricDBContext.PartySymbols.Where(i => i.Id == partyRegisterModel.Id).FirstOrDefault();
@@ -222,6 +233,67 @@ namespace BiometricProject.Controllers
             {
                 return Json(false, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        public ActionResult RegisterAadhar()
+        {
+            AadharDetailsModel aadharDetails = new AadharDetailsModel();
+            if (TempData["AadharSaveStatus"] != null)
+            {
+                aadharDetails.ReturnMessageType = TempData["AadharSaveStatus"].ToString();
+                aadharDetails.ReturnMessage = TempData["AadharSaveStatusMessage"].ToString();
+            }
+            return View(aadharDetails);
+        }
+
+        //[ValidateAntiForgeryToken]
+        [HttpPost]
+        public ActionResult RegisterAadhar(AadharDetailsModel aadharDetails, HttpPostedFileBase logo)
+        {
+            HttpPostedFileBase vendorPic = Request.Files["vendorPic"];
+            try
+            {
+                if (vendorPic != null && vendorPic.ContentLength > 0)
+                {
+                    int length = vendorPic.ContentLength;
+                    aadharDetails.BiometricImage = new byte[length];
+                    vendorPic.InputStream.Read(aadharDetails.BiometricImage, 0, length);
+                    using (biometricDBContext)
+                    {
+                        AadharDetails aadharDetailsObject = new AadharDetails()
+                        {
+                            Id = aadharDetails.Id,
+                            Name = aadharDetails.Name,
+                            AadharNumber = Convert.ToInt64(aadharDetails.AadharNumber),
+                            BiometricImage= aadharDetails.BiometricImage,
+                            DateOfBirth=aadharDetails.DateOfBirth,
+                            Address=aadharDetails.Address,
+                            AssemblyConstituencyId=Convert.ToInt32(aadharDetails.AssemblyConstituencyId),
+                            PhoneNumber= Convert.ToInt64(aadharDetails.PhoneNumber),
+                            EmailAddress=aadharDetails.EmailAddress,
+                            IsEnable=true
+                        };
+                        if (aadharDetails.Id == 0)
+                        {
+                            biometricDBContext.AadharDetails.Add(aadharDetailsObject);
+                        }
+                        else
+                        {
+                            var exixtingAadharDetails = biometricDBContext.AadharDetails.Where(i => i.Id == aadharDetails.Id).FirstOrDefault();
+                            biometricDBContext.Entry(exixtingAadharDetails).CurrentValues.SetValues(aadharDetails);
+                        }
+                        biometricDBContext.SaveChanges();
+                        TempData["AadharSaveStatus"] = "Success";
+                        TempData["AadharSaveStatusMessage"] = "Aadhar details saved successfully";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["AadharSaveStatus"] = "Failure";
+                TempData["AadharSaveStatusMessage"] = ex.Message + " " + ex.InnerException.Message;
+            }
+            return RedirectToAction("RegisterAadhar");
         }
 
         protected override void Dispose(bool disposing)

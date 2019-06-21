@@ -108,4 +108,3 @@ D:\Biometric Project\BiometricProject\BiometricProject\obj\Debug\BiometricProjec
 D:\Biometric Project\BiometricProject\BiometricProject\obj\Debug\BiometricProject.csproj.CopyComplete
 D:\Biometric Project\BiometricProject\BiometricProject\obj\Debug\BiometricProject.dll
 D:\Biometric Project\BiometricProject\BiometricProject\obj\Debug\BiometricProject.pdb
-D:\Biometric Project\BiometricProject\BiometricProject\obj\Debug\BiometricProject.csprojAssemblyReference.cache
