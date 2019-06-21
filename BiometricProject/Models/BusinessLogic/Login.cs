@@ -45,7 +45,6 @@ namespace BiometricProject.Models.BusinessLogic
                         userAadharDetails.BiometricImage = userAadharDetails.BiometricImage;
                         userAadharDetails.OTP = random.Next(1000, 9999);
                         userAadharDetails.OTPGeneratedTime = DateTime.Now;
-                        userAadharDetails.BiometricImage = userDetailsModel.BiometricImage;
                         string subject = purpose == "new registration" ? "Online voting registration OTP" : "Online voting reset password OTP";
                         if (SendEmail(subject, "OTP is: " + userAadharDetails.OTP + " valid for 15 minutes only", userAadharDetails.EmailAddress) == "Success")
                         {

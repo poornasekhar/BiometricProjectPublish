@@ -152,12 +152,28 @@
         if (Allow == false)
             return false;
         else {
+            var fileUpload = $("#vendorPic").get(0);
+            var files = fileUpload.files;
+
+            // Create FormData object  
+            var fileData = new FormData();
+
+            // Looping over all files and add it to FormData object  
+            for (var i = 0; i < files.length; i++) {
+                fileData.append(files[i].name, files[i]);
+            }
+
+            // Adding one more key to FormData object  
+            fileData.append('AadharNumber', $("#AadharNumber").val());
+            fileData.append('Password', $("#Password").val());
             $("#ajaxLoaderDiv").show();
             $.ajax({
                 url: '@Url.Action("ValidateLoginDetails", "Account")',
-                type: 'GET',
-                dataType: 'json',
-                data: $("#LoginFrmId").serialize(),
+                type: 'POST',
+                processData: false,
+                contentType: false,
+                //dataType: 'json',
+                data: fileData,
                 success: function (data) {
                     if (data == "already voted") {
                         $("#ajaxLoaderDiv").hide();

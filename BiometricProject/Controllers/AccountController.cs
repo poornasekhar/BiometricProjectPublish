@@ -79,17 +79,41 @@ namespace BiometricProject.Controllers
         }
 
         //[ValidateAntiForgeryToken]
-        //[HttpPost]
+        [HttpPost]
         //Validate Login credentails and generate OTP for login
-        public JsonResult ValidateLoginDetails(UserDetailsModel userDetailsModel,HttpPostedFileBase logo)
+        public JsonResult ValidateLoginDetails(/*UserDetailsModel userDetailsModel,HttpPostedFileBase logo*/)
         {
-            HttpPostedFileBase vendorPic = Request.Files["vendorPic"];
-                    if (vendorPic != null && vendorPic.ContentLength > 0)
-                    {
-                        int length = vendorPic.ContentLength;
-                        userDetailsModel.BiometricImage = new byte[length];
-                        vendorPic.InputStream.Read(userDetailsModel.BiometricImage, 0, length);
-                    }
+            HttpFileCollectionBase files = Request.Files;
+                HttpPostedFileBase file = files[0];
+                int length = file.ContentLength;
+                string fileName = file.FileName;
+                byte[] biometricImage = new byte[length];
+                file.InputStream.Read(biometricImage, 0, length);
+                long aadharNumber = Convert.ToInt64(Request["AadharNumber"]);
+                string password =(Request["Password"]);
+                FileStream bioImage = new FileStream(Server.MapPath("~/images/" + fileName /*+ ".jpg"*/), FileMode.Create, FileAccess.Write);
+            bioImage.Write(biometricImage, 0, biometricImage.Length);
+            string uploadedBiometricImagePath = Server.MapPath("~/images/" + fileName);
+            bioImage.Close();
+
+            var existingAadharDetails = biometricDBContext.AadharDetails.Where(i => i.AadharNumber == aadharNumber).FirstOrDefault();
+            if (existingAadharDetails == null)
+            {
+                return Json("false", JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                FileStream biometricImag = new FileStream(Server.MapPath("~/images/" + existingAadharDetails.AadharNumber + ".jpg"), FileMode.Create, FileAccess.Write);
+                biometricImag.Write(existingAadharDetails.BiometricImage, 0, existingAadharDetails.BiometricImage.Length);
+                string savedBiometricImagepath = Server.MapPath("~/images/" + existingAadharDetails.AadharNumber + ".jpg");
+                biometricImag.Close();
+                System.IO.File.Delete(uploadedBiometricImagePath);
+                System.IO.File.Delete(savedBiometricImagepath);
+            }
+            UserDetailsModel userDetailsModel = new UserDetailsModel();
+            userDetailsModel.AadharNumber = aadharNumber;
+            userDetailsModel.Password = password;
+            userDetailsModel.BiometricImage = biometricImage;
             var result = login.ValidateLoginDetails(userDetailsModel);
             return Json(result, JsonRequestBehavior.AllowGet);
         }

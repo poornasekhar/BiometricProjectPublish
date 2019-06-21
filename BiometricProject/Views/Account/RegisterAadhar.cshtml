@@ -85,6 +85,14 @@
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script type="text/javascript">
 
+    $("#aadharDetailsFrmId").submit(function () {
+        if ($("#vendorPic").val() == "") {
+            $("#picValidationMessage").text("Please upload biometric image");
+            return false;
+        }
+    });
+    
+
     @*$(document).ready(function () {
         if (@Model.ReturnMessageType!= null && @Model.ReturnMessageType!= "null") {
             if (@Model.ReturnMessageType.ToString()== "Success") {
