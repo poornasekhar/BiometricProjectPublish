@@ -11,6 +11,7 @@ using BiometricProject.App_Data;
 using BiometricProject.Models.BusinessLogic;
 using BiometricProject.Models.DataBaseModels;
 using BiometricProject.Models.Models;
+using Fingerprint_Recognition_Project;
 
 namespace BiometricProject.Controllers
 {
@@ -107,15 +108,24 @@ namespace BiometricProject.Controllers
                 biometricImag.Write(existingAadharDetails.BiometricImage, 0, existingAadharDetails.BiometricImage.Length);
                 string savedBiometricImagepath = Server.MapPath("~/images/" + existingAadharDetails.AadharNumber + ".jpg");
                 biometricImag.Close();
+                Form1 form1 = new Form1();
+                double score= form1.MatchFingerPrintScore(savedBiometricImagepath, uploadedBiometricImagePath);
                 System.IO.File.Delete(uploadedBiometricImagePath);
                 System.IO.File.Delete(savedBiometricImagepath);
+                if (score<= 15.0)
+                {
+                    return Json("ImagenotMatched", JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    UserDetailsModel userDetailsModel = new UserDetailsModel();
+                    userDetailsModel.AadharNumber = aadharNumber;
+                    userDetailsModel.Password = password;
+                    userDetailsModel.BiometricImage = biometricImage;
+                    var result = login.ValidateLoginDetails(userDetailsModel);
+                    return Json(result, JsonRequestBehavior.AllowGet);
+                }
             }
-            UserDetailsModel userDetailsModel = new UserDetailsModel();
-            userDetailsModel.AadharNumber = aadharNumber;
-            userDetailsModel.Password = password;
-            userDetailsModel.BiometricImage = biometricImage;
-            var result = login.ValidateLoginDetails(userDetailsModel);
-            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         //[ValidateAntiForgeryToken]
@@ -267,6 +277,11 @@ namespace BiometricProject.Controllers
                 aadharDetails.ReturnMessageType = TempData["AadharSaveStatus"].ToString();
                 aadharDetails.ReturnMessage = TempData["AadharSaveStatusMessage"].ToString();
             }
+            else
+            {
+                aadharDetails.ReturnMessageType = "newType";
+                aadharDetails.ReturnMessage = "newType";
+            }
             return View(aadharDetails);
         }
 
@@ -315,7 +330,7 @@ namespace BiometricProject.Controllers
             catch (Exception ex)
             {
                 TempData["AadharSaveStatus"] = "Failure";
-                TempData["AadharSaveStatusMessage"] = ex.Message + " " + ex.InnerException.Message;
+                TempData["AadharSaveStatusMessage"] = ex.Message + " " + ex.InnerException.InnerException;
             }
             return RedirectToAction("RegisterAadhar");
         }

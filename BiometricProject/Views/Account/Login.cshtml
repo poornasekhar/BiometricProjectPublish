@@ -187,6 +187,9 @@
                         swal("Success", "OTP Sended to registered mail, please verify OTP", "success");
                         return false;
                     }
+                    else if (data=="ImagenotMatched") {
+                        swal("Failure", "Biometric image not matched", "error");
+                    }
                     else {
                         //alert("Invalid credentials");
                         $("#ajaxLoaderDiv").hide();

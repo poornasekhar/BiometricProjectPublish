@@ -91,18 +91,17 @@
             return false;
         }
     });
-    
 
-    @*$(document).ready(function () {
-        if (@Model.ReturnMessageType!= null && @Model.ReturnMessageType!= "null") {
-            if (@Model.ReturnMessageType.ToString()== "Success") {
-                swal("Success", @Model.ReturnMessage, "success");
-            }
-            else {
-                swal("Error", @Model.ReturnMessage, "error");
-            }
+
+    $(document).ready(function () {
+        var modelData = @Html.Raw(Json.Encode(Model));
+        if (modelData["ReturnMessageType"] == "Success") {
+            swal("Success", modelData.ReturnMessage, "success");
         }
-    });*@
+        else if (modelData.ReturnMessageType == "Failure") {
+            swal("Error", "Invalid details/Some details alreay registered with other user", "error");
+        }
+    });
 
     //Disable Back Button In All Browsers.
     function DisableBackButtonAllBrowsers() {
